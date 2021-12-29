@@ -12,6 +12,11 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashTime = 0.25f;
     [SerializeField] private float dashMoveMultiplier = 2f;
 
+    public float Speed{get=>speed; set=>speed=value;}
+    public float DashTime{get=>dashTime;} 
+    public bool CanDash{get=>canDash; set=>canDash=value;}
+    public bool CanMove{get=>canMove; set=>canMove=value;}
+
     private Vector3 velocity;
     private Vector3 move;
     private bool isGrounded;
@@ -35,9 +40,13 @@ public class PlayerMovement : MonoBehaviour
 
         move = new Vector3(x*Mathf.Sqrt(1-z*z*0.5f), 0, z*Mathf.Sqrt(1-x*x*0.5f));
 
-        if(canMove)controller.Move(move * speed * Time.deltaTime);
+        if (canMove && move.magnitude>0.05)
+        {
+            controller.Move(move * speed * Time.deltaTime);
+            transform.LookAt(transform.position+move);
+        }
 
-        if (Input.GetButtonUp("Jump") && isGrounded)
+        if (Input.GetButtonDown("Jump") && isGrounded)
         {
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
@@ -69,4 +78,10 @@ public class PlayerMovement : MonoBehaviour
     }
 
     void ResetDashCD() => canDash = true;
+
+    private void OnDrawGizmosSelected()
+    {
+        UnityEditor.Handles.color = new Color32(10, 200, 100, 200);
+        if (GetComponent<DrawGizmos>().drawGizmos) UnityEditor.Handles.DrawWireDisc(transform.position, Vector3.up, speed * dashMoveMultiplier * dashTime);
+    }
 }
