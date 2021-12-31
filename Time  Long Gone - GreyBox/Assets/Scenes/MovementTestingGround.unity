@@ -504,13 +504,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 15
   gravity: -80
-  groundMask:
-    serializedVersion: 2
-    m_Bits: 64
   jumpHeight: 5
   dashCD: 0.3
   dashTime: 0.15
   dashMoveMultiplier: 3
+  iframesStart: 0
+  iframesEnd: 0.3
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!143 &910170404
 CharacterController:
   m_ObjectHideFlags: 0
@@ -557,9 +559,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7ab55cecf3cf19947b514d835bb74745, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyLayerMask:
-    serializedVersion: 2
-    m_Bits: 128
   attackRadius: 1.36
   attackDistance: 0.95
   damage: 10
@@ -567,6 +566,9 @@ MonoBehaviour:
   minHoldTime: 0.5
   maxHoldTime: 2
   ChargedAttackTrigger: {fileID: 137776843}
+  enemyLayerMask:
+    serializedVersion: 2
+    m_Bits: 128
 --- !u!114 &910170407
 MonoBehaviour:
   m_ObjectHideFlags: 0
