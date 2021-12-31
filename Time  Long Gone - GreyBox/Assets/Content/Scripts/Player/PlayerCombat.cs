@@ -4,14 +4,17 @@ using UnityEngine;
 
 public class PlayerCombat : MonoBehaviour
 {
-    [SerializeField] private LayerMask enemyLayerMask;
+    [Header("Normal attack")]
     [SerializeField] private float attackRadius = 1;
     [SerializeField] private float attackDistance = 0.5f;
     [SerializeField] private float damage = 10f;
     [SerializeField] private float attackCooldown = 0.2f;
+    [Header("Charged attack")]
     [SerializeField] private float minHoldTime = 0.8f;
     [SerializeField] private float maxHoldTime = 2f;
+    [Space]
     [SerializeField] private Collider ChargedAttackTrigger;
+    [SerializeField] private LayerMask enemyLayerMask;
 
     private bool canAttack = true;
     private float attackPressedTime;
@@ -90,6 +93,8 @@ public class PlayerCombat : MonoBehaviour
         float time = 0f;
         while (time < pm.DashTime)
         {
+            if (!pm.IsInvincible && time >= pm.IFramesStart * pm.DashTime) pm.IsInvincible = true;
+            if (pm.IsInvincible && time >= pm.IFramesEnd * pm.DashTime) pm.IsInvincible = false;
             time += Time.deltaTime;
             controller.Move(motion * pm.Speed * strength * 2.5f * Time.deltaTime);
             yield return new WaitForEndOfFrame();

@@ -2,26 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[SelectionBase]
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("Basic movement")]
     [SerializeField] private float speed = 10;
     [SerializeField] private float gravity = -30;
-    [SerializeField] private LayerMask groundMask;
     [SerializeField] private float jumpHeight = 10;
+    [Header("Dashing")]
     [SerializeField] private float dashCD = 1f;
-    [SerializeField] private float dashTime = 0.25f;
-    [SerializeField] private float dashMoveMultiplier = 2f;
+    [SerializeField][Tooltip("How long dash animation is")] private float dashTime = 0.25f;
+    [SerializeField][Tooltip("What product of speed is applied every frame of a dash")] private float dashMoveMultiplier = 2f;
+    [Header("Dash i-frames")]
+    [SerializeField][Range(0,1)][Tooltip("In what percent of dash animation i-frames start")] float iframesStart = 0;
+    [SerializeField][Range(0,1)][Tooltip("In what percent of dash animation i-frames end")] private float iframesEnd = 0.3f;
+    [Space]
+    [SerializeField] private LayerMask groundMask;
 
+    public float IFramesStart{get=>iframesStart;}
+    public float IFramesEnd{get=>iframesEnd;}
     public float Speed{get=>speed; set=>speed=value;}
     public float DashTime{get=>dashTime;} 
     public bool CanDash{get=>canDash; set=>canDash=value;}
     public bool CanMove{get=>canMove; set=>canMove=value;}
+    public bool IsInvincible{get=>isInvincible; set=>isInvincible=value;}
 
     private Vector3 velocity;
     private Vector3 move;
     private bool isGrounded;
     private bool canDash = true;
     private bool canMove = true;
+    private bool isInvincible = false;
 
     private CharacterController controller;
 
@@ -69,6 +80,8 @@ public class PlayerMovement : MonoBehaviour
         float time = 0f;
         while (time<dashTime)
         {
+            if (!isInvincible && time >= iframesStart * dashTime) isInvincible = true;
+            if (isInvincible && time >= iframesEnd * dashTime) isInvincible = false;
             time += Time.deltaTime;
             controller.Move(motion * speed * dashMoveMultiplier * Time.deltaTime);
             yield return new WaitForEndOfFrame();
