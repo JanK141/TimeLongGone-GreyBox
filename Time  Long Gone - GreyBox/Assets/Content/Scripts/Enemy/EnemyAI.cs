@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class EnemyAI : MonoBehaviour
@@ -7,14 +9,23 @@ public class EnemyAI : MonoBehaviour
     private Vector3 playerPosition;
     private GameObject player;
 
-    // Start is called before the first frame update
-    void Start() => player = GameObject.FindGameObjectWithTag("Player");
+    private EnemyActions actions;
+    void Start()
+    {
+        player = GameObject.FindGameObjectWithTag("Player");
+        actions = GetComponent<EnemyActions>();
+    }
+    
 
-    // Update is called once per frame
     void Update()
     {
-        CountDistance();
-        Behavoir();
+        //CountDistance();
+        //Behavoir();
+        if (!actions.IsPerforming)
+        {
+            int rand = Random.Range(0, actions.Actions.Count);
+            actions.Actions[rand].Invoke();
+        }
     }
 
     private void Behavoir()

@@ -1,53 +1,61 @@
 using System;
+using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class EnemyHealth : MonoBehaviour
 {
-    public float health = 100;
-    private const float maxHealth = 100;
+    public static EnemyHealth Instance;
 
-    public GameObject healthbarUI;
-    public Slider slider;
+    //SERIALIZED FIELDS
+    [SerializeField] [Min(1)] private float maxHealth = 100;
+    [SerializeField] private Slider slider;
+    [SerializeField] [Min(1)] [Tooltip("How many combat stages boss has (divided by % of hp) ")] private int stages = 1;
+    [SerializeField] private float barShakeStrength = 2f;
 
-    private Transform mainCamera;
+    //PRIVATE VARIABLES
+    private float currHealth;
+    private int currStage;
+    private float[] stageChangers;
 
-    private void Start()
-    {
-        mainCamera = GameObject.FindGameObjectWithTag("MainCamera").transform;
-        health = maxHealth;
-        slider.value = CalculateHealth();
+    //PROPERTIES
+    public float CurrHealth{get=>currHealth;
+        set { currHealth = value; UpdateHealth();}
     }
 
-    private void Update()
+    void Awake() => Instance = this;
+    void Start()
     {
-        slider.value = CalculateHealth();
-        checkHealth();
+        currHealth = maxHealth;
+        slider.value = 1;
+        currStage = 1;
+        stageChangers = new float[stages];
+        for (int i = 0; i < stages; i++)
+        {
+            if ((i + 1) == stages) stageChangers[i] = 0;
+            else stageChangers[i] = maxHealth - (maxHealth / stages) * (i + 1);
+        }
     }
 
-    private void LateUpdate()
-        =>
-            slider.transform.LookAt(transform.position + mainCamera.forward);
-
-    private float CalculateHealth() => health / maxHealth;
-
-    private void checkHealth()
+    void UpdateHealth()
     {
-        if (health < maxHealth)
-            healthbarUI.SetActive(true);
-        if (health <= 0)
-            Death();
-        if (health > maxHealth)
-            health = maxHealth;
+        slider.DOValue(currHealth / maxHealth, 0.5f);
+        slider.transform.DOShakePosition(0.5f, barShakeStrength);
+        if(currHealth<=0) Death();
+        else
+        {
+            if (currHealth <= stageChangers[currStage - 1])
+            {
+                currStage++;
+                //TODO next combat stage sequence
+            }
+        }
     }
 
-    internal void GetDamage(float damage)
+    void Death()
     {
-        health -= damage;
-        slider.value = CalculateHealth();
+        print("You won the level!");
+        //TODO start level end sequence
+        Destroy(gameObject);
     }
-
-    private void Death() 
-        =>
-            Destroy(gameObject);
 }

@@ -99,7 +99,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canMove && move.magnitude > 0.05)
         {
-            controller.Move(move * speed * Time.deltaTime);
+            controller.Move(move * speed * Time.unscaledDeltaTime);
             transform.LookAt(transform.position + move);
         }
 
@@ -108,8 +108,8 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        velocity.y += gravity * Time.deltaTime;
-        controller.Move(velocity * Time.deltaTime);
+        velocity.y += gravity * Time.unscaledDeltaTime;
+        controller.Move(velocity * Time.unscaledDeltaTime);
 
         if (Input.GetButtonDown("Fire1") && canDash)
         {
@@ -128,8 +128,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!isInvincible && time >= iframesStart * dashTime) isInvincible = true;
             if (isInvincible && time >= iframesEnd * dashTime) isInvincible = false;
-            time += Time.deltaTime;
-            controller.Move(motion * speed * dashMoveMultiplier * Time.deltaTime);
+            time += Time.unscaledDeltaTime;
+            controller.Move(motion * speed * dashMoveMultiplier * Time.unscaledDeltaTime);
             yield return new WaitForEndOfFrame();
         }
 

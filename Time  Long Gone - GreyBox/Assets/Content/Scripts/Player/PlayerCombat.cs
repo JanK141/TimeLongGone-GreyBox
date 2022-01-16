@@ -25,14 +25,12 @@ public class PlayerCombat : MonoBehaviour
     private PlayerMovement pm;
     private ChargedAttackTrigger cat;
     private CharacterController controller;
-    private Transform enemy;
 
     void Awake()
     {
         pm = GetComponent<PlayerMovement>();
         cat = ChargedAttackTrigger.GetComponent<ChargedAttackTrigger>();
         controller = GetComponent<CharacterController>();
-        enemy = GameObject.FindGameObjectWithTag("Enemy").transform;
     }
 
     void Start()
@@ -48,7 +46,7 @@ public class PlayerCombat : MonoBehaviour
             if (canAttack)
             {
                 isKeyDown = true;
-                attackPressedTime = Time.time;
+                attackPressedTime = Time.unscaledTime;
                 pm.Speed = moveSpeed * 0.2f;
             }
             else
@@ -61,7 +59,7 @@ public class PlayerCombat : MonoBehaviour
         {
             isKeyDown = false;
             pm.Speed = moveSpeed;
-            float holdTime = Time.time - attackPressedTime;
+            float holdTime = Time.unscaledTime - attackPressedTime;
             if (holdTime < minHoldTime)
             {
                 canAttack = false;
@@ -85,7 +83,7 @@ public class PlayerCombat : MonoBehaviour
                 enemyLayerMask))
         {
             print("DAMAGE! " + damage);
-            enemy.GetComponent<EnemyHealth>().GetDamage(damage);
+            EnemyHealth.Instance.CurrHealth-=damage;
         }
     }
 
@@ -93,7 +91,7 @@ public class PlayerCombat : MonoBehaviour
     {
         cat.gameObject.SetActive(true);
         cat.damage = damage + damage * strength;
-        Physics.IgnoreCollision(controller, enemy.GetComponent<Collider>(), true);
+        Physics.IgnoreCollision(controller, EnemyHealth.Instance.GetComponent<Collider>(), true);
         pm.CanDash = false;
         pm.CanMove = false;
         Vector3 motion = transform.forward;
@@ -102,14 +100,14 @@ public class PlayerCombat : MonoBehaviour
         {
             if (!pm.IsInvincible && time >= pm.IFramesStart * pm.DashTime) pm.IsInvincible = true;
             if (pm.IsInvincible && time >= pm.IFramesEnd * pm.DashTime) pm.IsInvincible = false;
-            time += Time.deltaTime;
-            controller.Move(motion * pm.Speed * strength * 2.5f * Time.deltaTime);
+            time += Time.unscaledDeltaTime;
+            controller.Move(motion * pm.Speed * strength * 2.5f * Time.unscaledDeltaTime);
             yield return new WaitForEndOfFrame();
         }
 
         pm.CanDash = true;
         pm.CanMove = true;
-        Physics.IgnoreCollision(controller, enemy.GetComponent<Collider>(), false);
+        Physics.IgnoreCollision(controller, EnemyHealth.Instance.GetComponent<Collider>(), false);
         cat.gameObject.SetActive(false);
     }
 

@@ -8,6 +8,7 @@ public class EnemyWalk : MonoBehaviour
     [SerializeField] private LayerMask groundMask; //for testing
 
     private NavMeshAgent agent;
+    private Animator anim;
 
     private bool isTesting; //for testing
 
@@ -27,7 +28,7 @@ public class EnemyWalk : MonoBehaviour
     }
 
     void Awake() => agent = GetComponent<NavMeshAgent>();
-
+    void Start() => anim = GetComponent<Animator>();
     void Update()
     {
         // -----------FOR TESTING ONLY --------------
@@ -47,6 +48,7 @@ public class EnemyWalk : MonoBehaviour
             agent.isStopped = true;
             agent.velocity /= 2;
         }
+        anim.SetFloat("speed", agent.velocity.magnitude);
     }
 
     public void WalkTo(Vector3 destination)
