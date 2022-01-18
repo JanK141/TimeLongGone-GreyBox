@@ -5,6 +5,8 @@ using UnityEngine;
 [SelectionBase]
 public class PlayerMovement : MonoBehaviour
 {
+    public static PlayerMovement Instance;
+
     [Header("Basic movement")] [SerializeField]
     private float speed = 10;
 
@@ -77,7 +79,11 @@ public class PlayerMovement : MonoBehaviour
 
     private CharacterController controller;
 
-    void Awake() => controller = GetComponent<CharacterController>();
+    void Awake()
+    {
+        Instance = this;
+        controller = GetComponent<CharacterController>();
+    }
 
     void Update()
     {

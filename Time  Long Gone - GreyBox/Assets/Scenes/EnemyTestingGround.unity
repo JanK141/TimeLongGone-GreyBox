@@ -135,7 +135,7 @@ GameObject:
   - component: {fileID: 102328721}
   - component: {fileID: 102328720}
   - component: {fileID: 102328719}
-  m_Layer: 7
+  m_Layer: 10
   m_Name: Weapon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -165,7 +165,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 102328717}
   m_Material: {fileID: 0}
   m_IsTrigger: 1
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.82
   m_Height: 2.49
   m_Direction: 1
@@ -251,7 +251,6 @@ GameObject:
   - component: {fileID: 544374372}
   - component: {fileID: 544374375}
   - component: {fileID: 544374374}
-  - component: {fileID: 544374373}
   m_Layer: 7
   m_Name: Sphere (1)
   m_TagString: Untagged
@@ -273,19 +272,6 @@ Transform:
   m_Father: {fileID: 1747449541}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &544374373
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 544374371}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &544374374
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -389,18 +375,6 @@ MonoBehaviour:
   slider: {fileID: 8869542560804942259}
   stages: 1
   barShakeStrength: 5
---- !u!114 &1386009270
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6132174672326004317}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b3ddfc99066098d41b72856d6d4d345e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1510228975
 GameObject:
   m_ObjectHideFlags: 0
@@ -733,7 +707,6 @@ GameObject:
   - component: {fileID: 2087358812}
   - component: {fileID: 2087358815}
   - component: {fileID: 2087358814}
-  - component: {fileID: 2087358813}
   m_Layer: 7
   m_Name: Sphere
   m_TagString: Untagged
@@ -755,19 +728,6 @@ Transform:
   m_Father: {fileID: 1747449541}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!135 &2087358813
-SphereCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2087358811}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Radius: 0.5
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!23 &2087358814
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -1231,10 +1191,10 @@ GameObject:
   - component: {fileID: 1386009262}
   - component: {fileID: 1386009263}
   - component: {fileID: 1386009264}
-  - component: {fileID: 1386009270}
   - component: {fileID: 6132174672326004318}
   - component: {fileID: 6132174672326004319}
   - component: {fileID: 6132174672326004320}
+  - component: {fileID: 6132174672326004321}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Enemy
@@ -1284,9 +1244,22 @@ MonoBehaviour:
   m_GameObject: {fileID: 6132174672326004317}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3909f8ec50ed316418a167969c433b3e, type: 3}
+  m_Script: {fileID: 11500000, guid: fff66cc3df747ac448662255ed2228ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6132174672326004321
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6132174672326004317}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0db888544215ff6478456f93169a32a5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DistanceToTriggerWalk: 6
 --- !u!1 &6819386026565979023
 GameObject:
   m_ObjectHideFlags: 0

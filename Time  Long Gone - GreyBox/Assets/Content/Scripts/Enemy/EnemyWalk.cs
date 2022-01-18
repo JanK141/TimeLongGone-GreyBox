@@ -25,6 +25,7 @@ public class EnemyWalk : MonoBehaviour
     public Vector3 CurrDestination
     {
         get => currDestination;
+        set { currDestination = value; SetDestination(value);}
     }
 
     void Awake() => agent = GetComponent<NavMeshAgent>();
@@ -47,8 +48,8 @@ public class EnemyWalk : MonoBehaviour
             isWalking = false;
             agent.isStopped = true;
             agent.velocity /= 2;
+            anim.SetTrigger("StopWalking");
         }
-        anim.SetFloat("speed", agent.velocity.magnitude);
     }
 
     public void WalkTo(Vector3 destination)
@@ -57,5 +58,10 @@ public class EnemyWalk : MonoBehaviour
         isWalking = true;
         currDestination = destination;
         agent.SetDestination(destination);
+    }
+
+    void SetDestination(Vector3 desVector3)
+    {
+        agent.SetDestination(desVector3);
     }
 }
