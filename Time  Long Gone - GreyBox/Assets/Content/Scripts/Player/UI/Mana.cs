@@ -10,7 +10,7 @@ public class Mana : MonoBehaviour
 
     //SERIALIZED FIELDS
     [SerializeField] [Min(1)] private float maxMana = 100;
-    //[SerializeField] private Slider slider;
+    [SerializeField] private Slider slider;
     [SerializeField] [Tooltip("How many points of mana are generated per second")] private float genRate = 5f;
     [SerializeField] [Tooltip("Determines how often a second will the Mana be generated")] public float refreshRate = 0.2f;
 
@@ -34,7 +34,7 @@ public class Mana : MonoBehaviour
     {
         currMana = 20;
         generating = true;
-        //slider.value = 0;
+        slider.value = 0;
         StartCoroutine(nameof(StartGenerating)); 
     }
 
@@ -65,7 +65,7 @@ public class Mana : MonoBehaviour
             generating = true;
         }
 
-        //slider.DOValue(currMana / maxMana, 0.1f);
+        slider.DOValue(currMana / maxMana, 0.1f);
     }
 
     //example method
