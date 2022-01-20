@@ -137,7 +137,7 @@ GameObject:
   - component: {fileID: 102328719}
   m_Layer: 10
   m_Name: Weapon
-  m_TagString: Untagged
+  m_TagString: EnemyWeapon
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -189,7 +189,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a9754bb2df5ae94c8620cd303f64cce, type: 2}
+  - {fileID: 2100000, guid: bf98e8a074936e643ab6b6d78a0e2100, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -340,8 +340,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_NoiseProfile: {fileID: 11400000, guid: 20a705aea2d80e0478fb89b6f43d8530, type: 2}
   m_PivotOffset: {x: 0, y: 0, z: 0}
-  m_AmplitudeGain: 1
-  m_FrequencyGain: 1
+  m_AmplitudeGain: 2
+  m_FrequencyGain: 0.1
   mNoiseOffsets: {x: 0, y: 0, z: 0}
 --- !u!1 &341528666
 GameObject:
@@ -429,8 +429,24 @@ Rigidbody:
   m_UseGravity: 0
   m_IsKinematic: 1
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 112
   m_CollisionDetection: 0
+--- !u!114 &476504845
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 476504843}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 92ebd9c7d50eb8a4a8677fe235983645, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InvincibleTimeAfterCol: 0.2
+  BlockCooldown: 0.5
+  ParryWindow: 0.2
+  PushFactor: 0.05
 --- !u!4 &476504849 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8311153228608419257, guid: 49e12a2498327984d81fa94ec8f7f293, type: 3}
@@ -487,7 +503,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a9754bb2df5ae94c8620cd303f64cce, type: 2}
+  - {fileID: 2100000, guid: bf98e8a074936e643ab6b6d78a0e2100, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -620,9 +636,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 966dc78c24b2e33498ab956597daf67d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 100
+  maxHealth: 200
   slider: {fileID: 8869542560804942259}
-  stages: 1
+  stages: 2
   barShakeStrength: 5
 --- !u!1 &1510228975
 GameObject:
@@ -1031,7 +1047,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 2a9754bb2df5ae94c8620cd303f64cce, type: 2}
+  - {fileID: 2100000, guid: bf98e8a074936e643ab6b6d78a0e2100, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1531,6 +1547,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fff66cc3df747ac448662255ed2228ba, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ParryAffected: 020000000300000001000000
+  ParriedChance: 0.8
 --- !u!114 &6132174672326004321
 MonoBehaviour:
   m_ObjectHideFlags: 0

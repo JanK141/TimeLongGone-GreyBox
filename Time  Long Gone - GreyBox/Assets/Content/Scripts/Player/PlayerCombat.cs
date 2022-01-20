@@ -46,7 +46,7 @@ public class PlayerCombat : MonoBehaviour
             if (canAttack)
             {
                 isKeyDown = true;
-                attackPressedTime = Time.unscaledTime;
+                attackPressedTime = Time.time;
                 pm.Speed = moveSpeed * 0.2f;
             }
             else
@@ -59,7 +59,7 @@ public class PlayerCombat : MonoBehaviour
         {
             isKeyDown = false;
             pm.Speed = moveSpeed;
-            float holdTime = Time.unscaledTime - attackPressedTime;
+            float holdTime = Time.time - attackPressedTime;
             if (holdTime < minHoldTime)
             {
                 canAttack = false;
@@ -82,8 +82,7 @@ public class PlayerCombat : MonoBehaviour
                 attackRadius,
                 enemyLayerMask))
         {
-            print("DAMAGE! " + damage);
-            EnemyHealth.Instance.CurrHealth-=damage;
+            if(EnemyStatus.Instance.status != Status.Invincible)EnemyHealth.Instance.CurrHealth-=damage;
         }
     }
 
@@ -100,8 +99,8 @@ public class PlayerCombat : MonoBehaviour
         {
             if (!pm.IsInvincible && time >= pm.IFramesStart * pm.DashTime) pm.IsInvincible = true;
             if (pm.IsInvincible && time >= pm.IFramesEnd * pm.DashTime) pm.IsInvincible = false;
-            time += Time.unscaledDeltaTime;
-            controller.Move(motion * pm.Speed * strength * 2.5f * Time.unscaledDeltaTime);
+            time += Time.deltaTime;
+            controller.Move(motion * pm.Speed * strength * 2.5f * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
 

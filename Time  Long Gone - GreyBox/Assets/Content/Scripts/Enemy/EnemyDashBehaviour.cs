@@ -6,6 +6,8 @@ using UnityEngine;
 public class EnemyDashBehaviour : StateMachineBehaviour
 {
     [SerializeField] private AnimationCurve DashSpeedCurve;
+    [SerializeField] private Status AttackStatus = Status.Regular;
+    [SerializeField] private float PushForce;
 
     private Vector3 playerPos;
     private Vector3 enemyPos;
@@ -14,6 +16,8 @@ public class EnemyDashBehaviour : StateMachineBehaviour
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        EnemyStatus.Instance.status = AttackStatus;
+        EnemyStatus.Instance.AttackForce = PushForce;
         enemyPos = animator.transform.position;
         playerPos = new Vector3(PlayerMovement.Instance.transform.position.x, enemyPos.y, PlayerMovement.Instance.transform.position.z);
         animator.transform.DOLookAt
@@ -31,6 +35,6 @@ public class EnemyDashBehaviour : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-
+        EnemyStatus.Instance.status = Status.Neutral;
     }
 }

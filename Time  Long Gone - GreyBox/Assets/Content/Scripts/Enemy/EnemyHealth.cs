@@ -22,6 +22,7 @@ public class EnemyHealth : MonoBehaviour
     public float CurrHealth{get=>currHealth;
         set { currHealth = value; UpdateHealth();}
     }
+    public int CurrStage{get=>currStage;}
 
     void Awake() => Instance = this;
     void Start()
@@ -47,6 +48,7 @@ public class EnemyHealth : MonoBehaviour
             if (currHealth <= stageChangers[currStage - 1])
             {
                 currStage++;
+                GetComponent<Animator>().SetTrigger("NextStage");
                 //TODO next combat stage sequence
             }
         }

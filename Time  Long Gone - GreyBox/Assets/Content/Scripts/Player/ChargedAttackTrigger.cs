@@ -10,8 +10,7 @@ public class ChargedAttackTrigger : MonoBehaviour
     {
         if (other.CompareTag("Enemy"))
         {
-            print("Dash damage! " + damage);
-            EnemyHealth.Instance.CurrHealth -= damage;
+            if(EnemyStatus.Instance.status != Status.Invincible)EnemyHealth.Instance.CurrHealth -= damage;
             gameObject.SetActive(false);
         }
     }

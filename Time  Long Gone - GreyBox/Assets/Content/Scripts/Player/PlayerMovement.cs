@@ -31,44 +31,15 @@ public class PlayerMovement : MonoBehaviour
 
     [Space] [SerializeField] private LayerMask groundMask;
 
-    public float IFramesStart
-    {
-        get => iframesStart;
-    }
-
-    public float IFramesEnd
-    {
-        get => iframesEnd;
-    }
-
-    public float Speed
-    {
-        get => speed;
-        set => speed = value;
-    }
-
-    public float DashTime
-    {
-        get => dashTime;
-    }
-
-    public bool CanDash
-    {
-        get => canDash;
-        set => canDash = value;
-    }
-
-    public bool CanMove
-    {
-        get => canMove;
-        set => canMove = value;
-    }
-
-    public bool IsInvincible
-    {
-        get => isInvincible;
-        set => isInvincible = value;
-    }
+    public float IFramesStart {get => iframesStart;}
+    public float IFramesEnd{get => iframesEnd;}
+    public float Speed { get => speed; set => speed = value;}
+    public float DashTime { get => dashTime; }
+    public bool CanDash { get => canDash; set => canDash = value; }
+    public bool CanMove { get => canMove; set => canMove = value; }
+    public bool IsInvincible { get => isInvincible; set => isInvincible = value; }
+    public Vector3 Velocity {get=>velocity; set=>velocity=value;}
+    public float Gravity {get => gravity;}
 
     private Vector3 velocity;
     private Vector3 move;
@@ -87,17 +58,12 @@ public class PlayerMovement : MonoBehaviour
 
     void Update()
     {
-        isGrounded = Physics.CheckSphere(new Vector3(transform.position.x,
-                transform.position.y - controller.height / 2,
-                transform.position.z),
-            0.4f,
-            groundMask);
+        ProcessGravity();
+        ProcessMovement();
+    }
 
-        if (isGrounded && velocity.y < 0)
-        {
-            velocity.y = -2f;
-        }
-
+    void ProcessMovement()
+    {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
 
@@ -105,7 +71,7 @@ public class PlayerMovement : MonoBehaviour
 
         if (canMove && move.magnitude > 0.05)
         {
-            controller.Move(move * speed * Time.unscaledDeltaTime);
+            controller.Move(move * speed * Time.deltaTime);
             transform.LookAt(transform.position + move);
         }
 
@@ -114,15 +80,29 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        velocity.y += gravity * Time.unscaledDeltaTime;
-        controller.Move(velocity * Time.unscaledDeltaTime);
-
         if (Input.GetButtonDown("Fire1") && canDash)
         {
             canDash = false;
             StartCoroutine(nameof(Dash));
             Invoke(nameof(ResetDashCD), dashCD);
         }
+    }
+
+    void ProcessGravity()
+    {
+        isGrounded = Physics.CheckSphere(new Vector3(transform.position.x,
+                transform.position.y - controller.height / 2,
+                transform.position.z),
+            0.4f,
+            groundMask);
+
+        if (isGrounded && velocity.y < 0)
+        {
+            velocity = new Vector3(0, -2f, 0);
+        }
+
+        velocity.y += gravity * Time.deltaTime;
+        controller.Move(velocity * Time.deltaTime);
     }
 
     IEnumerator Dash()
@@ -134,8 +114,8 @@ public class PlayerMovement : MonoBehaviour
         {
             if (!isInvincible && time >= iframesStart * dashTime) isInvincible = true;
             if (isInvincible && time >= iframesEnd * dashTime) isInvincible = false;
-            time += Time.unscaledDeltaTime;
-            controller.Move(motion * speed * dashMoveMultiplier * Time.unscaledDeltaTime);
+            time += Time.deltaTime;
+            controller.Move(motion * speed * dashMoveMultiplier * Time.deltaTime);
             yield return new WaitForEndOfFrame();
         }
 

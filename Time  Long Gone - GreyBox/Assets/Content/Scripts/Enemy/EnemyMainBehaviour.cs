@@ -4,20 +4,22 @@ using UnityEngine;
 
 public class EnemyMainBehaviour : StateMachineBehaviour
 {
-    [SerializeField] [Tooltip("Always keep walk trigger as first")] private List<string> TriggersToUse;
+    [SerializeField] [Tooltip("Each List is separate stage. Always keep walk trigger as first")] private List<ListWrapper> TriggersToUse;
     [SerializeField] [Min(0)] private float MinWaitTime;
     [SerializeField] [Min(0)] private float MaxWaitTime;
 
     private float DistanceToTriggerWalk;
     private float timeToTrigger;
     private bool needToTrigger = false;
+    private int stage;
 
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        stage = EnemyHealth.Instance.CurrStage;
         DistanceToTriggerWalk = AIvariables.Instance.DistanceToTriggerWalk;
         if(Vector3.Distance(animator.transform.position, PlayerMovement.Instance.transform.position) >= DistanceToTriggerWalk)
-            animator.SetTrigger(TriggersToUse[0]);
+            animator.SetTrigger(TriggersToUse[stage-1].Triggers[0]);
         else
         {
             timeToTrigger = Time.time + (Random.Range(MinWaitTime, MaxWaitTime));
@@ -30,7 +32,7 @@ public class EnemyMainBehaviour : StateMachineBehaviour
     {
         if (needToTrigger && Time.time >= timeToTrigger)
         {
-            animator.SetTrigger(TriggersToUse[Random.Range(1, TriggersToUse.Count)]);
+            animator.SetTrigger(TriggersToUse[stage-1].Triggers[Random.Range(1, TriggersToUse[stage-1].Triggers.Count)]);
             needToTrigger = false;
         }
     }
@@ -40,6 +42,11 @@ public class EnemyMainBehaviour : StateMachineBehaviour
     {
         
     }
-    
+
+    [System.Serializable]
+    public class ListWrapper
+    {
+        public List<string> Triggers;
+    }
 
 }
