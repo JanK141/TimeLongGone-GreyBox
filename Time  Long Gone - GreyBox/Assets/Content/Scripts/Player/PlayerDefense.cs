@@ -30,13 +30,13 @@ public class PlayerDefense : MonoBehaviour
 
     void Update()
     {
-        if (canBlock && Input.GetButtonDown("Fire3"))
+        if (canBlock && Input.GetButtonDown("Block"))
         {
             isBlocking = true;
             blockTime = Time.time;
         }
 
-        if (isBlocking && Input.GetButtonUp("Fire3"))
+        if (isBlocking && Input.GetButtonUp("Block"))
         {
             isBlocking = false;
             canBlock = false;
@@ -100,6 +100,7 @@ public class PlayerDefense : MonoBehaviour
 
         StartCoroutine(Push(pushDir));
         print("DEATH!"); //TODO stuff
+        TimeManipulation.Instance.IsPlayerDead = true;
     }
 
     IEnumerator Push(Vector3 force)

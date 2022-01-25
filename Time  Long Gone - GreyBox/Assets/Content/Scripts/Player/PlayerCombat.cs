@@ -40,7 +40,7 @@ public class PlayerCombat : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Fire2"))
+        if (Input.GetButtonDown("Attack"))
         {
             //TODO while holding attack button draw some indicator showing distance and direction of dash-attack
             if (canAttack)
@@ -55,7 +55,7 @@ public class PlayerCombat : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonUp("Fire2") && canAttack && isKeyDown)
+        if (Input.GetButtonUp("Attack") && canAttack && isKeyDown)
         {
             isKeyDown = false;
             pm.Speed = moveSpeed;

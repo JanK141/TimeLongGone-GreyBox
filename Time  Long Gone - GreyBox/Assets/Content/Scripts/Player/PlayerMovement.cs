@@ -80,7 +80,7 @@ public class PlayerMovement : MonoBehaviour
             velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
         }
 
-        if (Input.GetButtonDown("Fire1") && canDash)
+        if (Input.GetButtonDown("Dash") && canDash)
         {
             canDash = false;
             StartCoroutine(nameof(Dash));
