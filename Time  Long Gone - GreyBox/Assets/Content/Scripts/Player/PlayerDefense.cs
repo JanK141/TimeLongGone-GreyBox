@@ -66,6 +66,7 @@ public class PlayerDefense : MonoBehaviour
                     if (Time.time - blockTime <= ParryWindow){
                         StartCoroutine(Push(pushDir / 2));
                         status.Parried();
+                        Mana.Instance.CurrMana += 10f;
                         //TODO stuff
                         return;
 
@@ -80,6 +81,7 @@ public class PlayerDefense : MonoBehaviour
                 if (isBlocking && Time.time - blockTime <= ParryWindow){
                     StartCoroutine(Push(pushDir / 2));
                     status.Parried();
+                    Mana.Instance.CurrMana += 10f;
                     //TODO stuff
                     return;
                 }
@@ -88,6 +90,7 @@ public class PlayerDefense : MonoBehaviour
                 if (isBlocking && Time.time - blockTime <= ParryWindow){
                     StartCoroutine(Push(pushDir / 2));
                     status.Parried();
+                    Mana.Instance.CurrMana += 10f;
                     //TODO stuff
                     return;
                 }

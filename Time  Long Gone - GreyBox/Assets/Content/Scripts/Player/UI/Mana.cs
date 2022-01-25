@@ -12,10 +12,13 @@ public class Mana : MonoBehaviour
     [SerializeField] [Min(1)] private float maxMana = 100;
     [SerializeField] private Slider slider;
     [SerializeField] [Tooltip("How many points of mana are generated per second")] private float genRate = 5f;
-    [SerializeField] [Tooltip("Determines how often a second will the Mana be generated")] public float refreshRate = 0.2f;
+    [SerializeField] [Tooltip("Time for lerping slider value")] private float DoValueTime;
+    [SerializeField] [Tooltip("Mana cost per second while using slow mo")] private float slowMoCost;
+    [SerializeField] [Tooltip("Flat amount of mana used to start rewinding time")] private float flatRewindCost;
+    [SerializeField] [Tooltip("Mana cost per second while rewinding")] public float rewindCost;
 
     //PUBLIC VARIABLES
-    public float currMana;
+    private float currMana;
 
     //PRIVATE VARIABLES
     private bool generating;
@@ -24,8 +27,12 @@ public class Mana : MonoBehaviour
     public float CurrMana
     {
         get => currMana;
-        set { currMana = value; UpdateMana(); }
+        set { currMana = value; UpdateMana();}
     }
+    public bool Generating{get=>generating; set=>generating=value;}
+    public float SlowMoCost{get=>slowMoCost;}
+    public float FlatRewindCost{get=>flatRewindCost;}
+    public float RewindCost{get=>rewindCost;}
 
     void Awake() => Instance = this;
 
@@ -35,39 +42,31 @@ public class Mana : MonoBehaviour
         currMana = 20;
         generating = true;
         slider.value = 0;
-        StartCoroutine(nameof(StartGenerating)); 
     }
 
-    IEnumerator StartGenerating()
+    void Update()
     {
-        print("Started generating");
-        while(true)
+        if (currMana<=maxMana && generating)
         {
-            yield return new WaitForSeconds(refreshRate);
-            if(generating)
-            {
-                print("Generated " + genRate*refreshRate);
-                currMana += genRate * refreshRate;
-                UpdateMana();
-            }
+            currMana += genRate * Time.unscaledDeltaTime;
+            slider.value = currMana / maxMana;
         }
+        Mathf.Clamp(currMana, 0, maxMana);
+        //slider.value = currMana / maxMana;
     }
+
 
     void UpdateMana()
     {
-        if(currMana >= maxMana)
+        slider.DOValue(currMana / maxMana, DoValueTime);
+        if (generating)
         {
-            currMana = maxMana;
             generating = false;
+            Invoke(nameof(ResetGenerating), DoValueTime);
         }
-        else
-        {
-            generating = true;
-        }
-
-        slider.DOValue(currMana / maxMana, 0.1f);
     }
 
+    void ResetGenerating() => generating = true;
     //example method
     void UseMana()
     {
@@ -78,12 +77,4 @@ public class Mana : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        if (Input.GetButtonDown("Fire1"))
-        {
-            UseMana();
-        }
-    }
 }

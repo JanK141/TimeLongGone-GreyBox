@@ -15,6 +15,7 @@ public class TimeManipulation : MonoBehaviour
 
     private bool isRewinding = false;
     private bool isPlayerDead = false;
+    private bool isSlowMo = false;
 
     public bool IsPlayerDead{get=>isPlayerDead; set{isPlayerDead=value; DeadOrAlive(value);}}
     public float RewindTime{get=>MaxRewindTime;}
@@ -30,20 +31,33 @@ public class TimeManipulation : MonoBehaviour
     {
         if (!isPlayerDead)
         {
-            if (Input.GetButtonDown("Power")) StartCoroutine(StartSlowMo());
-            if (Input.GetButtonUp("Power")) StartCoroutine(StopSlowMo());
+            if (!isSlowMo && Input.GetButtonDown("Power")){isSlowMo=true; StartCoroutine(StartSlowMo());}
+            if (isSlowMo && Input.GetButtonUp("Power")){isSlowMo=false; StartCoroutine(StopSlowMo());}
+            if (isSlowMo)
+            {
+                Mana.Instance.CurrMana -= Mana.Instance.SlowMoCost * Time.unscaledDeltaTime;
+                if (Mana.Instance.CurrMana < 1)
+                {
+                    isSlowMo = false;
+                    StartCoroutine(StopSlowMo());
+                }
+            }
         }
         else
         {
-            if (Input.GetButtonDown("Power"))
+            if (isRewinding) Mana.Instance.CurrMana -= Mana.Instance.rewindCost * Time.unscaledDeltaTime;
+            if (Input.GetButtonDown("Power") && Mana.Instance.CurrMana>Mana.Instance.FlatRewindCost)
             {
+                Mana.Instance.CurrMana -= Mana.Instance.FlatRewindCost;
+                Mana.Instance.Generating = false;
                 PlayerMovement.Instance.GetComponent<CharacterController>().enabled = false;
                 EnemyStatus.Instance.GetComponent<Animator>().enabled = false;
                 isRewinding =true; 
                 print("Start Rewind");
             }
-            if (Input.GetButtonUp("Power"))
+            if ((Input.GetButtonUp("Power") && isRewinding) || (Mana.Instance.CurrMana<1 && isRewinding))
             {
+                Mana.Instance.Generating = true;
                 PlayerMovement.Instance.GetComponent<CharacterController>().enabled = true;
                 EnemyStatus.Instance.GetComponent<Animator>().enabled = true;
                 print("Stop Rewind");
@@ -55,9 +69,14 @@ public class TimeManipulation : MonoBehaviour
 
     void DeadOrAlive(bool dead)
     {
-        if (dead) StartCoroutine(PlayerDead());
+        if (dead)
+        {
+            Mana.Instance.Generating = false;
+            StartCoroutine(PlayerDead());
+        }
         else
         {
+            Mana.Instance.Generating = true;
             Time.timeScale = MinSlowMo;
             StartCoroutine(StopSlowMo());
         }
@@ -67,7 +86,7 @@ public class TimeManipulation : MonoBehaviour
     {
         var composer = cam.GetCinemachineComponent<CinemachineGroupComposer>();
         float time = ((1 - Time.timeScale) / (1 - MinSlowMo)) * SlowMoTime;
-        while (Input.GetButton("Power") && Time.timeScale>MinSlowMo)
+        while (isSlowMo && Time.timeScale>MinSlowMo)
         {
             time += Time.unscaledDeltaTime;
             composer.m_MinimumFOV = Mathf.Lerp(88f, 60f, time / SlowMoTime);
@@ -75,29 +94,19 @@ public class TimeManipulation : MonoBehaviour
             Time.fixedDeltaTime = Time.timeScale * 0.02f;
             yield return null;
         }
-        if (Input.GetButton("Power"))
-        {
-            Time.timeScale = MinSlowMo;
-            Time.fixedDeltaTime = Time.timeScale * 0.02f;
-        }
     }
     //TODO change loop conditions in corutines for safety
     IEnumerator StopSlowMo()
     {
         var composer = cam.GetCinemachineComponent<CinemachineGroupComposer>();
         float time = ((Time.timeScale-MinSlowMo) / (1 - MinSlowMo)) * SlowMoTime;
-        while (!Input.GetButton("Power") && Time.timeScale < 1f)
+        while (!isSlowMo && Time.timeScale < 1f)
         {
             time += Time.unscaledDeltaTime;
             composer.m_MinimumFOV = Mathf.Lerp(60f, 88f, time / SlowMoTime);
             Time.timeScale = Mathf.Lerp(MinSlowMo, 1f, time / SlowMoTime);
             Time.fixedDeltaTime = Time.timeScale * 0.02f;
             yield return null;
-        }
-        if (!Input.GetButton("Power"))
-        {
-            Time.timeScale = 1f;
-            Time.fixedDeltaTime = Time.timeScale * 0.02f;
         }
     }
 
